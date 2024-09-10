@@ -19,6 +19,14 @@ class ChessMap779:
             'q': np.array([0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
             'k': np.array([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
         }
+        # additional cmr bits are:
+        # 0: 0 if white to move, 1 if black to move
+        # 1: 1 if white has kingside castling rights, 0 otherwise
+        # 2: 1 if white has queenside castling rights, 0 otherwise
+        # 3: 1 if black has kingside castling rights, 0 otherwise
+        # 4: 1 if black has queenside castling rights, 0 otherwise
+        # 5-10: the bit representation of the en passant square
+
         self.binary_to_piece = {tuple(v): k for k, v in self.piece_to_binary.items()}
 
     def extract_metadata(self, game):
@@ -111,45 +119,3 @@ class ChessMap779:
     def visualize_board(self, cmr):
         board = self.cmr_to_board(cmr)
         return str(board)
-
-if __name__ == "__main__":
-    fens = [
-        "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-        "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1",
-        "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 2",
-        "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2",
-        "r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3",
-    ]
-
-    converter = ChessMap779()
-    for i, fen in enumerate(fens):
-        board = chess.Board(fen)
-        cmr = converter.board_to_cmr(board)
-        cmr_board = converter.cmr_to_board(cmr)
-        fen_board_array = converter.board_to_array(board)
-        cmr_board_array = converter.board_to_array(cmr_board)
-        print("move number", i)
-        print("original from fen to board")
-        print(board)
-        print("converted from fen to cmr to board")
-        print(cmr_board)
-        print("fen representation of original baord")
-        print(board.fen())
-        print("fen representation of cmr board (notice the lack of move number)")
-        print(cmr_board.fen())
-        print("================================================")
-        assert np.array_equal(fen_board_array, cmr_board_array), f"Board mismatch at move {i}"
-    
-    for i, fen in enumerate(fens):
-        board = chess.Board(fen)
-        cmr = converter.board_to_cmr(board)
-        print("cmr representation of board")
-        print("move number", i)
-        piece_board, rights = converter.split_cmr(cmr)
-    
-        print("Piece board representation:")
-        print(piece_board)
-
-        print("Castling and en passant rights:")
-        print(rights)
-        print("================================================")

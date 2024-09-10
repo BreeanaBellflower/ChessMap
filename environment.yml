@@ -8,3 +8,4 @@ dependencies:
   - pip:
     - chess
     - numpy
+    - pytest-cov
