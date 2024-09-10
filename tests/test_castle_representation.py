@@ -98,7 +98,7 @@ def test_cm779_to_fen():
         board = chess.Board(fen)
         cm779 = ChessMap779.board_to_cm779(board)
         fen_from_cm779 = ChessMap779.cm779_to_fen(cm779)
-        assert fen_from_cm779.split(' ')[:-3] == fen.split(' ')[:-3], f"FEN mismatch at move {i}"
+        assert fen_from_cm779.split(' ')[:-3] == fen.split(' ')[:-3], f"FEN mismatch"
 
 def test_visualize_board():
     fen = "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2"
