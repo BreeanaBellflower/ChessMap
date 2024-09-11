@@ -1,5 +1,5 @@
 import pytest
-from src.chess_map_779 import ChessMap779
+from src.chess_map_267 import ChessMap267
 import chess
 import numpy as np
 import hashlib
@@ -15,13 +15,13 @@ def test_array_consistency():
 
     for i, fen in enumerate(fens):
         board = chess.Board(fen)
-        cm779 = ChessMap779.board_to_cm779(board)
-        cm779_board = ChessMap779.cm779_to_board(cm779)
-        fen_board_array = ChessMap779.board_to_array(board)
-        cm779_board_array = ChessMap779.board_to_array(cm779_board)
-        assert np.array_equal(fen_board_array, cm779_board_array), f"Board mismatch at move {i}"
+        cm267 = ChessMap267.board_to_cm267(board)
+        cm267_board = ChessMap267.cm267_to_board(cm267)
+        fen_board_array = ChessMap267.board_to_array(board)
+        cm267_board_array = ChessMap267.board_to_array(cm267_board)
+        assert np.array_equal(fen_board_array, cm267_board_array), f"Board mismatch at move {i}"
 
-def test_cm779_to_fen_consistency():
+def test_cm267_to_fen_consistency():
     fens = [
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
         "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1",
@@ -32,13 +32,13 @@ def test_cm779_to_fen_consistency():
 
     for i, fen in enumerate(fens):
         board = chess.Board(fen)
-        cm779 = ChessMap779.board_to_cm779(board)
-        cm779_board = ChessMap779.cm779_to_board(cm779)
-        fen_board_array = ChessMap779.board_to_array(board)
-        cm779_board_array = ChessMap779.board_to_array(cm779_board)
+        cm267 = ChessMap267.board_to_cm267(board)
+        cm267_board = ChessMap267.cm267_to_board(cm267)
+        fen_board_array = ChessMap267.board_to_array(board)
+        cm267_board_array = ChessMap267.board_to_array(cm267_board)
         # move numbers not preserved in castle representation, remove from fen
-        assert np.array_equal(fen_board_array, cm779_board_array), f"Board mismatch at move {i}"
-        assert board.fen().split()[:-3] == cm779_board.fen().split()[:-3], f"FEN mismatch at move {i}"
+        assert np.array_equal(fen_board_array, cm267_board_array), f"Board mismatch at move {i}"
+        assert board.fen().split()[:-3] == cm267_board.fen().split()[:-3], f"FEN mismatch at move {i}"
 
 def test_en_passant():
     fens = [
@@ -48,9 +48,9 @@ def test_en_passant():
 
     for i, fen in enumerate(fens):
         board = chess.Board(fen)
-        cm779 = ChessMap779.board_to_cm779(board)
-        cm779_board = ChessMap779.cm779_to_board(cm779)
-        assert board.ep_square == cm779_board.ep_square, f"En passant square mismatch at move {i}"
+        cm267 = ChessMap267.board_to_cm267(board)
+        cm267_board = ChessMap267.cm267_to_board(cm267)
+        assert board.ep_square == cm267_board.ep_square, f"En passant square mismatch at move {i}"
 
 def test_castling_rights():
     fens = [
@@ -62,13 +62,13 @@ def test_castling_rights():
 
     for i, fen in enumerate(fens):
         board = chess.Board(fen)
-        cm779 = ChessMap779.board_to_cm779(board)
-        cm779_board = ChessMap779.cm779_to_board(cm779)
-        assert board.castling_rights == cm779_board.castling_rights, f"Castling rights mismatch at move {i}"
+        cm267 = ChessMap267.board_to_cm267(board)
+        cm267_board = ChessMap267.cm267_to_board(cm267)
+        assert board.castling_rights == cm267_board.castling_rights, f"Castling rights mismatch at move {i}"
 
 def test_extract_metadata():
     game = type('Game', (object,), {'headers': {'Event': 'Test Event', 'Site': 'Test Site'}})()
-    metadata = ChessMap779.extract_metadata(game)
+    metadata = ChessMap267.extract_metadata(game)
     assert metadata == {'Event': 'Test Event', 'Site': 'Test Site'}
 
 def test_generate_game_id():
@@ -80,12 +80,12 @@ def test_generate_game_id():
         'White': 'Player1',
         'Black': 'Player2'
     }
-    game_id = ChessMap779.generate_game_id(metadata)
+    game_id = ChessMap267.generate_game_id(metadata)
     expected_id_string = 'Test Event_Test Site_2023.10.01_1_Player1_Player2'
     expected_game_id = hashlib.md5(expected_id_string.encode()).hexdigest()
     assert game_id == expected_game_id
 
-def test_cm779_to_fen():
+def test_cm267_to_fen():
     fens = [
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
         "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
@@ -96,15 +96,15 @@ def test_cm779_to_fen():
 
     for fen in fens:
         board = chess.Board(fen)
-        cm779 = ChessMap779.board_to_cm779(board)
-        fen_from_cm779 = ChessMap779.cm779_to_fen(cm779)
-        assert fen_from_cm779.split(' ')[:-3] == fen.split(' ')[:-3], f"FEN mismatch"
+        cm267 = ChessMap267.board_to_cm267(board)
+        fen_from_cm267 = ChessMap267.cm267_to_fen(cm267)
+        assert fen_from_cm267.split(' ')[:-3] == fen.split(' ')[:-3], f"FEN mismatch"
 
 def test_visualize_board():
     fen = "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2"
     board = chess.Board(fen)
-    cm779 = ChessMap779.board_to_cm779(board)
-    board_str = ChessMap779.visualize_board(cm779)
+    cm267 = ChessMap267.board_to_cm267(board)
+    board_str = ChessMap267.visualize_board(cm267)
     print(board)
     expected_board_str = """r n b q k b n r
 p p p p . p p p
